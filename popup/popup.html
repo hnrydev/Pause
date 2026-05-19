@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pause</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="logo" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5" opacity="0.35"/>
+            <rect x="10" y="8" width="3" height="12" rx="1.5" fill="currentColor"/>
+            <rect x="15" y="8" width="3" height="12" rx="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Pause</h1>
+          <p class="subtitle">Mindful browsing reminders</p>
+        </div>
+        <label class="toggle" title="Enable Pause">
+          <input type="checkbox" id="enabled" />
+          <span class="toggle-track"></span>
+        </label>
+      </header>
+
+      <section class="section">
+        <h2>When to remind</h2>
+        <div class="segmented" role="tablist" aria-label="Tracking mode">
+          <button type="button" class="segmented-btn active" data-mode="specific">Selected sites</button>
+          <button type="button" class="segmented-btn" data-mode="all">All browsing</button>
+        </div>
+      </section>
+
+      <section class="section" id="sites-section">
+        <div class="section-head">
+          <h2>Websites</h2>
+          <span class="badge" id="site-count">0</span>
+        </div>
+        <p class="hint">Add domains like <code>x.com</code> or <code>youtube.com</code></p>
+        <div class="chip-input-row">
+          <input type="text" id="site-input" placeholder="Add website…" autocomplete="off" spellcheck="false" />
+          <button type="button" id="add-site" class="btn-icon" aria-label="Add website">+</button>
+        </div>
+        <ul id="site-list" class="chip-list"></ul>
+      </section>
+
+      <section class="section">
+        <h2>Time on site</h2>
+        <p class="hint">Show a pause reminder after this much active time</p>
+        <div class="preset-grid" id="interval-presets"></div>
+      </section>
+
+      <section class="section">
+        <h2>Your message</h2>
+        <label class="field">
+          <span>Title</span>
+          <input type="text" id="title" maxlength="60" placeholder="Pause" />
+        </label>
+        <label class="field">
+          <span>Message</span>
+          <textarea id="message" rows="3" maxlength="280" placeholder="Your reminder text…"></textarea>
+        </label>
+      </section>
+
+      <section class="section">
+        <h2>Snooze duration</h2>
+        <div class="preset-grid compact" id="snooze-presets"></div>
+      </section>
+
+      <footer class="footer">
+        <button type="button" id="preview" class="btn-ghost">Preview reminder</button>
+        <button type="button" id="reset-timer" class="btn-ghost">Reset timer</button>
+      </footer>
+    </div>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

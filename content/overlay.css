@@ -1,0 +1,162 @@
+#pause-extension-root {
+  --pause-bg: rgba(12, 12, 14, 0.52);
+  --pause-card: #ffffff;
+  --pause-text: #1d1d1f;
+  --pause-muted: #6e6e73;
+  --pause-border: rgba(0, 0, 0, 0.08);
+  --pause-primary: #1d1d1f;
+  --pause-primary-text: #ffffff;
+  --pause-shadow: 0 24px 80px rgba(0, 0, 0, 0.18), 0 8px 24px rgba(0, 0, 0, 0.08);
+  --pause-font: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --pause-radius: 20px;
+
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  font-family: var(--pause-font);
+  opacity: 0;
+  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+#pause-extension-root.pause-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pause-extension-active {
+  overflow: hidden !important;
+}
+
+#pause-extension-root .pause-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--pause-bg);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+}
+
+#pause-extension-root .pause-card {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 36px 32px 28px;
+  background: var(--pause-card);
+  border: 1px solid var(--pause-border);
+  border-radius: var(--pause-radius);
+  box-shadow: var(--pause-shadow);
+  text-align: center;
+  transform: translateY(12px) scale(0.98);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#pause-extension-root.pause-visible .pause-card {
+  transform: translateY(0) scale(1);
+}
+
+#pause-extension-root .pause-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 20px;
+  color: var(--pause-text);
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 14px;
+}
+
+#pause-extension-root .pause-title {
+  margin: 0 0 10px;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--pause-text);
+}
+
+#pause-extension-root .pause-message {
+  margin: 0 0 28px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--pause-muted);
+}
+
+#pause-extension-root .pause-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#pause-extension-root .pause-btn {
+  width: 100%;
+  padding: 13px 18px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+}
+
+#pause-extension-root .pause-btn:hover {
+  transform: translateY(-1px);
+}
+
+#pause-extension-root .pause-btn:active {
+  transform: translateY(0);
+}
+
+#pause-extension-root .pause-btn-primary {
+  color: var(--pause-primary-text);
+  background: var(--pause-primary);
+}
+
+#pause-extension-root .pause-btn-primary:hover {
+  opacity: 0.92;
+}
+
+#pause-extension-root .pause-btn-secondary {
+  color: var(--pause-text);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+#pause-extension-root .pause-btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+#pause-extension-root .pause-hint {
+  margin: 18px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--pause-muted);
+  opacity: 0.7;
+}
+
+@media (prefers-color-scheme: dark) {
+  #pause-extension-root {
+    --pause-bg: rgba(0, 0, 0, 0.62);
+    --pause-card: #1c1c1e;
+    --pause-text: #f5f5f7;
+    --pause-muted: #a1a1a6;
+    --pause-border: rgba(255, 255, 255, 0.1);
+    --pause-primary: #f5f5f7;
+    --pause-primary-text: #1d1d1f;
+    --pause-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  }
+
+  #pause-extension-root .pause-icon {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  #pause-extension-root .pause-btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  #pause-extension-root .pause-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
