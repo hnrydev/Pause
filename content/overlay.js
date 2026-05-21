@@ -13,7 +13,23 @@ function removeOverlay() {
   document.documentElement.classList.remove("pause-extension-active");
 }
 
-function createOverlay({ title, message, snoozeMinutes }) {
+function completeSnooze(host, snoozeMins) {
+  removeOverlay();
+  chrome.runtime.sendMessage({
+    type: "PAUSE_SNOOZED",
+    host,
+    minutes: snoozeMins,
+  });
+}
+
+function createOverlay({
+  title,
+  message,
+  snoozeMinutes,
+  closeTabOnRefocus,
+  snoozeRequireRetype,
+  snoozeRetypePhrase,
+}) {
   removeOverlay();
 
   const root = document.createElement("div");
@@ -27,6 +43,12 @@ function createOverlay({ title, message, snoozeMinutes }) {
 
   const card = document.createElement("div");
   card.className = "pause-card";
+
+  const mainView = document.createElement("div");
+  mainView.className = "pause-view pause-view-main";
+
+  const snoozeView = document.createElement("div");
+  snoozeView.className = "pause-view pause-view-snooze hidden";
 
   const icon = document.createElement("div");
   icon.className = "pause-icon";
@@ -52,6 +74,8 @@ function createOverlay({ title, message, snoozeMinutes }) {
   actions.className = "pause-actions";
 
   const snoozeMins = snoozeMinutes || 10;
+  const host = getHost();
+  const phrase = (snoozeRetypePhrase || "").trim();
 
   const continueBtn = document.createElement("button");
   continueBtn.type = "button";
@@ -68,7 +92,49 @@ function createOverlay({ title, message, snoozeMinutes }) {
   hint.textContent = "Pause · mindful browsing";
 
   actions.append(continueBtn, snoozeBtn);
-  card.append(icon, titleEl, messageEl, actions, hint);
+  mainView.append(icon.cloneNode(true), titleEl, messageEl, actions, hint);
+
+  const snoozeTitle = document.createElement("h2");
+  snoozeTitle.className = "pause-snooze-title";
+  snoozeTitle.textContent = "Retype to snooze";
+
+  const snoozeHint = document.createElement("p");
+  snoozeHint.className = "pause-message pause-snooze-hint";
+  snoozeHint.textContent = "Type the phrase below exactly to snooze this reminder.";
+
+  const phraseBox = document.createElement("p");
+  phraseBox.className = "pause-phrase-box";
+  phraseBox.textContent = phrase;
+
+  const retypeInput = document.createElement("input");
+  retypeInput.type = "text";
+  retypeInput.className = "pause-retype-input";
+  retypeInput.setAttribute("autocomplete", "off");
+  retypeInput.setAttribute("spellcheck", "false");
+  retypeInput.setAttribute("aria-label", "Retype phrase to snooze");
+  retypeInput.placeholder = "Type phrase here…";
+
+  const retypeError = document.createElement("p");
+  retypeError.className = "pause-retype-error hidden";
+  retypeError.textContent = "Phrase doesn't match. Try again.";
+
+  const snoozeActions = document.createElement("div");
+  snoozeActions.className = "pause-actions";
+
+  const confirmSnoozeBtn = document.createElement("button");
+  confirmSnoozeBtn.type = "button";
+  confirmSnoozeBtn.className = "pause-btn pause-btn-primary";
+  confirmSnoozeBtn.textContent = "Confirm snooze";
+
+  const backBtn = document.createElement("button");
+  backBtn.type = "button";
+  backBtn.className = "pause-btn pause-btn-secondary";
+  backBtn.textContent = "Back";
+
+  snoozeActions.append(confirmSnoozeBtn, backBtn);
+  snoozeView.append(snoozeTitle, snoozeHint, phraseBox, retypeInput, retypeError, snoozeActions);
+
+  card.append(mainView, snoozeView);
   root.append(backdrop, card);
 
   document.documentElement.classList.add("pause-extension-active");
@@ -76,31 +142,64 @@ function createOverlay({ title, message, snoozeMinutes }) {
 
   requestAnimationFrame(() => root.classList.add("pause-visible"));
 
-  const host = getHost();
+  function showMainView() {
+    mainView.classList.remove("hidden");
+    snoozeView.classList.add("hidden");
+    retypeInput.value = "";
+    retypeError.classList.add("hidden");
+    titleEl.id = "pause-title";
+  }
+
+  function showSnoozeView() {
+    mainView.classList.add("hidden");
+    snoozeView.classList.remove("hidden");
+    retypeInput.value = "";
+    retypeError.classList.add("hidden");
+    titleEl.id = "";
+    snoozeTitle.id = "pause-title";
+    retypeInput.focus();
+  }
 
   continueBtn.addEventListener("click", () => {
     removeOverlay();
-    chrome.runtime.sendMessage({ type: "PAUSE_DISMISSED" });
-  });
-
-  snoozeBtn.addEventListener("click", () => {
-    removeOverlay();
     chrome.runtime.sendMessage({
-      type: "PAUSE_SNOOZED",
-      host,
-      minutes: snoozeMins,
+      type: "PAUSE_DISMISSED",
+      closeTab: Boolean(closeTabOnRefocus),
     });
   });
 
-  backdrop.addEventListener("click", () => continueBtn.click());
+  snoozeBtn.addEventListener("click", () => {
+    if (snoozeRequireRetype && phrase) {
+      showSnoozeView();
+      return;
+    }
+    completeSnooze(host, snoozeMins);
+  });
 
-  document.addEventListener(
-    "keydown",
-    (e) => {
-      if (e.key === "Escape") continueBtn.click();
-    },
-    { once: true }
-  );
+  backBtn.addEventListener("click", showMainView);
+
+  function tryConfirmSnooze() {
+    if (retypeInput.value === phrase) {
+      completeSnooze(host, snoozeMins);
+      return;
+    }
+    retypeError.classList.remove("hidden");
+    retypeInput.focus();
+    retypeInput.select();
+  }
+
+  confirmSnoozeBtn.addEventListener("click", tryConfirmSnooze);
+  retypeInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      tryConfirmSnooze();
+    }
+  });
+
+  backdrop.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
 }
 
 chrome.runtime.onMessage.addListener((message) => {
@@ -109,6 +208,9 @@ chrome.runtime.onMessage.addListener((message) => {
       title: message.title,
       message: message.message,
       snoozeMinutes: message.snoozeMinutes,
+      closeTabOnRefocus: message.closeTabOnRefocus,
+      snoozeRequireRetype: message.snoozeRequireRetype,
+      snoozeRetypePhrase: message.snoozeRetypePhrase,
     });
   }
 });

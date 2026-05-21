@@ -360,3 +360,25 @@ body {
   opacity: 0.45;
   pointer-events: none;
 }
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.setting-label {
+  margin: 0 0 2px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.setting-hint {
+  margin: 0;
+}
+
+#snooze-phrase-field.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}

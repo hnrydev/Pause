@@ -7,6 +7,9 @@ export const DEFAULT_SETTINGS = {
   message:
     "Are you spending your time most efficiently? Maybe there's something better worth your attention.",
   snoozeMinutes: 10,
+  closeTabOnRefocus: false,
+  snoozeRequireRetype: false,
+  snoozeRetypePhrase: "I choose to continue",
 };
 
 export const INTERVAL_PRESETS = [

@@ -114,6 +114,9 @@ async function showPauseOnTab(tabId, settings) {
     title: settings.title,
     message: settings.message,
     snoozeMinutes: settings.snoozeMinutes,
+    closeTabOnRefocus: settings.closeTabOnRefocus,
+    snoozeRequireRetype: settings.snoozeRequireRetype,
+    snoozeRetypePhrase: settings.snoozeRetypePhrase,
   };
 
   try {
@@ -171,6 +174,15 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       session.accumulatedMs = 0;
       if (session.activeSince) session.activeSince = Date.now();
       await setSession(session);
+
+      if (message.closeTab && _sender?.tab?.id != null) {
+        try {
+          await chrome.tabs.remove(_sender.tab.id);
+        } catch (err) {
+          console.warn("Pause: could not close tab", err);
+        }
+      }
+
       sendResponse({ ok: true });
     }
 

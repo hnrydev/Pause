@@ -66,6 +66,45 @@
       </section>
 
       <section class="section">
+        <h2>When you refocus</h2>
+        <div class="setting-row">
+          <div>
+            <p class="setting-label">Close tab on refocus</p>
+            <p class="hint setting-hint">Closes only the tab where the reminder appeared</p>
+          </div>
+          <label class="toggle" title="Close tab when I refocus">
+            <input type="checkbox" id="close-tab-on-refocus" />
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>When you snooze</h2>
+        <div class="setting-row">
+          <div>
+            <p class="setting-label">Require retype to snooze</p>
+            <p class="hint setting-hint">You must retype a phrase before snooze takes effect</p>
+          </div>
+          <label class="toggle" title="Require retype to snooze">
+            <input type="checkbox" id="snooze-require-retype" />
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+        <label class="field" id="snooze-phrase-field">
+          <span>Phrase to retype</span>
+          <input
+            type="text"
+            id="snooze-retype-phrase"
+            maxlength="120"
+            placeholder="I choose to continue"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </label>
+      </section>
+
+      <section class="section">
         <h2>Snooze duration</h2>
         <div class="preset-grid compact" id="snooze-presets"></div>
       </section>

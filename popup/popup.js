@@ -75,8 +75,16 @@ function setMode(mode, { save = true } = {}) {
   if (save) scheduleSave();
 }
 
+function updateSnoozePhraseUI() {
+  $("snooze-phrase-field").classList.toggle("disabled", !settings.snoozeRequireRetype);
+}
+
 function render() {
   $("enabled").checked = settings.enabled;
+  $("close-tab-on-refocus").checked = settings.closeTabOnRefocus;
+  $("snooze-require-retype").checked = settings.snoozeRequireRetype;
+  $("snooze-retype-phrase").value = settings.snoozeRetypePhrase;
+  updateSnoozePhraseUI();
   $("title").value = settings.title;
   $("message").value = settings.message;
   updateModeUI(settings.mode);
@@ -110,6 +118,22 @@ $("enabled").addEventListener("change", (e) => {
   scheduleSave();
 });
 
+$("close-tab-on-refocus").addEventListener("change", (e) => {
+  settings.closeTabOnRefocus = e.target.checked;
+  scheduleSave();
+});
+
+$("snooze-require-retype").addEventListener("change", (e) => {
+  settings.snoozeRequireRetype = e.target.checked;
+  updateSnoozePhraseUI();
+  scheduleSave();
+});
+
+$("snooze-retype-phrase").addEventListener("input", (e) => {
+  settings.snoozeRetypePhrase = e.target.value;
+  scheduleSave();
+});
+
 $("title").addEventListener("input", (e) => {
   settings.title = e.target.value;
   scheduleSave();
@@ -140,6 +164,9 @@ $("preview").addEventListener("click", async () => {
     title: settings.title,
     message: settings.message,
     snoozeMinutes: settings.snoozeMinutes,
+    closeTabOnRefocus: settings.closeTabOnRefocus,
+    snoozeRequireRetype: settings.snoozeRequireRetype,
+    snoozeRetypePhrase: settings.snoozeRetypePhrase,
   };
   try {
     await chrome.tabs.sendMessage(tab.id, payload);

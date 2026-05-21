@@ -136,6 +136,64 @@
   opacity: 0.7;
 }
 
+#pause-extension-root .pause-view.hidden {
+  display: none;
+}
+
+#pause-extension-root .pause-snooze-title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--pause-text);
+}
+
+#pause-extension-root .pause-snooze-hint {
+  margin-bottom: 16px;
+}
+
+#pause-extension-root .pause-phrase-box {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--pause-text);
+  text-align: left;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--pause-border);
+  border-radius: 10px;
+  word-break: break-word;
+}
+
+#pause-extension-root .pause-retype-input {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--pause-text);
+  background: var(--pause-card);
+  border: 1px solid var(--pause-border);
+  border-radius: 10px;
+  outline: none;
+}
+
+#pause-extension-root .pause-retype-input:focus {
+  border-color: rgba(0, 0, 0, 0.22);
+}
+
+#pause-extension-root .pause-retype-error {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #ff3b30;
+  text-align: left;
+}
+
+#pause-extension-root .pause-retype-error.hidden {
+  display: none;
+}
+
 @media (prefers-color-scheme: dark) {
   #pause-extension-root {
     --pause-bg: rgba(0, 0, 0, 0.62);
@@ -158,5 +216,13 @@
 
   #pause-extension-root .pause-btn-secondary:hover {
     background: rgba(255, 255, 255, 0.12);
+  }
+
+  #pause-extension-root .pause-phrase-box {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  #pause-extension-root .pause-retype-input:focus {
+    border-color: rgba(255, 255, 255, 0.22);
   }
 }
